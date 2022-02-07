@@ -5,6 +5,8 @@ from PPlay.sound import *
 
 import cenas
 
+import fase1_plus
+
 
 def tela_vitoria_fase1_boa():
     janela = Window(800, 600)
@@ -280,6 +282,67 @@ def tela_controles():
             janela.update()
 
 
+def tela_jogo_nao_fechado():
+    janela = Window(800, 600)
+    janela.set_title("Not a Hero!")
+
+    teclado = janela.get_keyboard()
+
+    mouse = Mouse()
+
+    fundo = GameImage("imagens/menu_inicial/fundo.png")
+
+    texto_aviso = GameImage("imagens/telas/texto_aviso_new_game_plus.png")
+
+    botao_voltar = GameImage("imagens/telas/botao_voltar.png")
+    botao_voltar.x = janela.width / 2 - 80
+    botao_voltar.y = 480
+
+    while True:
+        # Entrada de Dados
+        if teclado.key_pressed("esc"):
+            break
+
+        if mouse.is_button_pressed(1) and mouse.is_over_object(botao_voltar):
+            break
+
+        # Desenhos
+        fundo.draw()
+        texto_aviso.draw()
+        botao_voltar.draw()
+
+        # Update
+        janela.update()
+
+
+def tela_aviso_ngplus():
+    janela = Window(800, 600)
+    janela.set_title("Not a Hero!")
+
+    mouse = Mouse()
+
+    fundo = GameImage("imagens/menu_inicial/fundo.png")
+
+    texto_aviso = GameImage("imagens/telas/aviso_ngplus.png")
+
+    botao_continuar = GameImage("imagens/menu_inicial/botao_continuar.png")
+    botao_continuar.x = janela.width / 2 - 80
+    botao_continuar.y = 480
+
+    while True:
+    # Entrada de Dados
+        if mouse.is_button_pressed(1) and mouse.is_over_object(botao_continuar):
+            fase1_plus.iniciar_fase1()
+
+        # Desenhos
+        fundo.draw()
+        texto_aviso.draw()
+        botao_continuar.draw()
+
+        # Update
+        janela.update()
+
+
 def tela_final_boa():
     janela = Window(800, 600)
     janela.set_title("Not a Hero!")
@@ -339,3 +402,32 @@ def tela_final_ruim():
 
         janela.update()
 
+
+def tela_final_ngplus():
+    janela = Window(800, 600)
+    janela.set_title("Not a Hero!")
+
+    mouse = Mouse()
+
+    musica = Sound("musicas/musica_final.ogg")
+    musica.set_volume(5)
+    musica.set_repeat(True) 
+
+    fundo = GameImage("imagens/menu_inicial/fundo.png")
+    texto = GameImage("imagens/telas/texto_ngplus.png")
+    botao_finalizar_jogo = GameImage("imagens/menu_inicial/botao_finalizar_jogo.png")
+
+    botao_finalizar_jogo.x = janela.width / 2 - 80
+    botao_finalizar_jogo.y = janela.height - 50
+
+    while True:
+        musica.play()
+
+        if mouse.is_button_pressed(1) and mouse.is_over_object(botao_finalizar_jogo):
+            tela_creditos_final()
+
+        fundo.draw()
+        texto.draw()
+        botao_finalizar_jogo.draw()
+
+        janela.update()
