@@ -8,8 +8,6 @@ import player
 import inimigos
 import telas
 import menus
-import salvar
-import carregar_finais
 
 
 def iniciar_fase4(): 
@@ -60,7 +58,6 @@ def iniciar_fase4():
     jogador = Animation("imagens/jogador/heroi_idle.png", 8)
     jogador.set_sequence_time(0, 7, 200)
     jogador.y = chao_plat1.y - 40
-    tentativas = 0
 
     jogador_parado = Animation("imagens/jogador/heroi_idle.png", 8)
     jogador_parado.set_sequence_time(0, 7, 200)
@@ -84,7 +81,7 @@ def iniciar_fase4():
     jogador_ataque_esq.set_sequence_time(0, 5, 70)
 
     escudo = GameImage("imagens/jogador/icone_escudo.png")
-    escudo.y = 35
+    escudo.y = 0
 
     escudo_ativo = True
     invulneravel = False
@@ -95,8 +92,8 @@ def iniciar_fase4():
     orc.set_sequence_time(0, 3, 100)
     orc.x = chao_plat1.x + 150
     orc.y = chao_plat1.y - 40
-    velx_orc = -20
-    limite_orc = 80
+    velx_orc = -25
+    limite_orc = 100
     passos_orc = 0
     orc_vivo = True
 
@@ -122,7 +119,7 @@ def iniciar_fase4():
     esqueleto.set_sequence_time(0, 3, 100)
     esqueleto.x = chao_plat3.x 
     esqueleto.y = chao_plat3.y - esqueleto.height
-    velx_esqueleto = 20
+    velx_esqueleto = 40
     limite_esqueleto = 80
     passos_esqueleto = 0
     esqueleto_vivo = True
@@ -241,30 +238,22 @@ def iniciar_fase4():
         if not escudo_ativo and not invulneravel:
             if jogador.collided(orc) or jogador.collided(larva_de_fogo) or jogador.collided(esqueleto):
                 if batalha_final:
-                    tentativas += 1
-                    jogador.x = plataforma4.x + 50
-                    jogador.y = plataforma4.y - 40
-                    escudo_ativo = True
+                    musica_boss.stop()
+                    menus.menu_inicial()
                 
                 if not batalha_final:
-                    tentativas += 1
-                    jogador.x = 0
-                    jogador.y = chao_plat1.y - 40
-                    escudo_ativo = True
+                    musica.stop()
+                    menus.menu_inicial()
             # Fim da Mecânica do Escudo
         
         if jogador.y >= janela.height:
             if batalha_final:
-                tentativas += 1
-                jogador.x = plataforma4.x + 50
-                jogador.y = plataforma4.y - 40
-                escudo_ativo = True
+                musica_boss.stop()
+                menus.menu_inicial()
 
             if not batalha_final:
-                tentativas += 1
-                jogador.x = 0
-                jogador.y = chao_plat1.y - 40
-                escudo_ativo = True
+                musica.stop()
+                menus.menu_inicial()
 
             # Mecânica da Espada:
         if (acao == 6 or acao == 7) and jogador.collided(orc):
@@ -294,7 +283,7 @@ def iniciar_fase4():
 
             cronometro_tiros += janela.delta_time()
 
-            if cronometro_tiros >= 0.75:
+            if cronometro_tiros >= 0.6:
                 projetil_chefao = Animation("imagens/fase4/projetil_vilao.png", 6)
                 projetil_chefao.set_sequence_time(0, 5, 100)
                 projetil_chefao.x = chefao.x 
@@ -304,7 +293,7 @@ def iniciar_fase4():
                 cronometro_tiros = 0
 
             for tiro in tiros:
-                tiro.x += 550 * janela.delta_time()
+                tiro.x += 580 * janela.delta_time()
 
                 if tiro.collided(jogador):
                     tiros.remove(tiro)
@@ -314,49 +303,27 @@ def iniciar_fase4():
                         invulneravel = True
 
                     if not escudo_ativo and not invulneravel:
-                        tentativas += 1
-                        jogador.x = plataforma4.x + 50
-                        jogador.y = plataforma4.y - 40
-                        escudo_ativo = True
+                        musica_boss.stop()
+                        menus.menu_inicial()
                     
                 if tiro.x >= janela.width:
                     tiros.remove(tiro)
                 
-                if jogador.collided(chefao) and (acao == 6 or acao == 7):
+                if jogador.collided(chefao):
                     musica_boss.stop()
 
-                    salvar.salvar_jogo_finalizado()
-
-                    if tentativas < 10:
-                        qtd_finais_bons = carregar_finais.carregar_final_bom()
-                        qtd_finais_bons += 1
-                        salvar.salvar_final_bom(str(qtd_finais_bons))
-
-                    if tentativas >= 10:
-                        qtd_finais_ruins = carregar_finais.carregar_final_ruim()
-                        qtd_finais_ruins += 1
-                        salvar.salvar_final_ruim(str(qtd_finais_ruins))
-                    
-                    qtd_finais_bons = carregar_finais.carregar_final_bom()
-                    qtd_finais_ruins = carregar_finais.carregar_final_ruim()
-
-                    if qtd_finais_bons > qtd_finais_ruins:
-                        telas.tela_final_boa()
-                        
-                    if qtd_finais_bons <= qtd_finais_ruins:
-                        telas.tela_final_ruim()
+                    telas.tela_final_ngplus()
                     
             # Fim da Batalha Final
 
         # Desenhos
         back.draw()
-        janela.draw_text(f"Tentativas: {tentativas}", 0, 0, 24, color=(255, 255, 255), font_name="Bahnschrift")
 
         if escudo_ativo:
             escudo.draw()
         
         if invulneravel:
-            janela.draw_text(f"Imune a dano!", 0, 35, 24, color=(0, 0, 0), font_name="Bahnschrift")
+            janela.draw_text(f"Imune a dano!", 0, 0, 24, color=(0, 0, 0), font_name="Bahnschrift")
 
         plataforma1.draw()
         chao_plat1.draw()
@@ -392,4 +359,3 @@ def iniciar_fase4():
         larva_de_fogo.update()
         esqueleto.update()
         janela.update()
- 
